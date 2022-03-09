@@ -6,6 +6,8 @@ const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 
 const { User } = require("./models/User");
+const { Post } = require("./models/Post");
+const { Tag } = require("./models/Tags");
 const { auth } = require("./middleware/auth");
 
 // [bodyParser Setting]
@@ -36,12 +38,13 @@ app.get('/api/hello', (req, res) => {
 	res.send('안녕하세요.');
 });
 
+// ----- ADMIN -----
 
 // admin login
 app.put('/api/users/register', (req, res) => {
 	const user = new User(req.body);
 
-	user.save((err, userInfo) => {
+	user.save((err) => {
 		if (err) {
 			return res.json({ success: false, err });
 		} else {
@@ -110,4 +113,64 @@ app.get("/api/users/logout", auth, (req, res) => {
 				success: true
 			});
 		})
+});
+
+// 글 리스트 가져오기
+app.get("/api/post-list",  (req, res) => {
+	Post.find((err, data) => {
+		if (err) {
+			return res.json({ success: false, err });
+		} else {
+			return res.status(200).json({ success: true, posts: data });
+		}
+	}).sort([['date', -1]]) // 최근 글
+	// .limit( 페이징 )
+	// .sort( [[]] )
+});
+
+// ----- POST -----
+// 포스트 읽기
+app.get("/api/post",  (req, res) => {
+	Post.findOne({ _id: req.body.id }, (err, data) => {
+		if (err) {
+			return res.json({ success: false, err });
+		} else {
+			return res.status(200).json({ success: true, posts: data });
+		}
+	})
+});
+
+// 포스트 쓰기
+app.post("/api/post", (req, res) => {
+	const postData = {
+		title: req.body.title,
+		author: req.body.author,
+		content: req.body.content,
+		tags: []
+	}
+
+	postData.tags = Tag.findAndInsertTag(req.body.tags, (err, tagArr) => {
+		postData.tags = tagArr;
+		const post = new Post(postData);
+		post.save((err) => {
+			if (err) {
+				return res.json({ success: false, err });
+			} else {
+				return res.status(200).json({ success: true });
+			}
+		});
+	});
+});
+
+
+// ----- Tag -----
+// 태그 전체 가져오기
+app.get("/api/tags",  (req, res) => {
+	Tag.find((err, data) => {
+		if (err) {
+			return res.json({ success: false, err });
+		} else {
+			return res.status(200).json({ success: true, posts: data });
+		}
+	}).sort([['tag_name', 1]]) // 최근 글
 });
