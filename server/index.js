@@ -36,6 +36,8 @@ app.get('/api/hello', (req, res) => {
 	res.send('안녕하세요.');
 });
 
+
+// admin login
 app.put('/api/users/register', (req, res) => {
 	const user = new User(req.body);
 

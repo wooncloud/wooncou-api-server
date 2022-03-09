@@ -9,10 +9,10 @@ const jwt = require('jsonwebtoken');
 
 const userSchema = mongoose.Schema({
 	name: { type: String, maxlength: 50 },
-	email: { type: String, trim: true, unique: true },
-	password: { type: String, minlength: 5 },
+	email: { type: String, required:true, trim: true, unique: true },
+	password: { type: String, required:true, minlength: 5 },
 	lastname: { type: String, maxlength: 50 },
-	role: { type: Number, default: 0 },
+	role: { type: Number, required:true, default: 0 },
 	image: { type: String },
 	token: { type: String },
 	tokenExp: { type: Number }
