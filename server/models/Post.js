@@ -10,7 +10,6 @@ const postSchema = mongoose.Schema({
     deleted: { type: String, required: true, default: 'N' },
     content: { type: String, required: true },
     tags: [{ type: Schema.Types.ObjectId, ref: 'Tag' }],
-    comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }]
 });
 
 const Post = mongoose.model('Post', postSchema);

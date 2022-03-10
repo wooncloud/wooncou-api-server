@@ -131,7 +131,9 @@ app.get("/api/post-list",  (req, res) => {
 // ----- POST -----
 // 포스트 읽기
 app.get("/api/post",  (req, res) => {
-	Post.findOne({ _id: req.body.id }, (err, data) => {
+	const filter = { _id: req.body.id };
+
+	Post.findOne(filter, (err, data) => {
 		if (err) {
 			return res.json({ success: false, err });
 		} else {
@@ -159,6 +161,20 @@ app.post("/api/post", (req, res) => {
 				return res.status(200).json({ success: true });
 			}
 		});
+	});
+});
+
+// 포스트 삭제
+app.delete("/api/post", (req, res) => {
+	const filter = { _id: req.body.id };
+	const update = { deleted: "Y" };
+
+	Post.findByIdAndUpdate(filter, update, (err, data) => {
+		if (err) {
+			return res.json({ success: false, err });
+		} else {
+			return res.status(200).json({ success: true });
+		}
 	});
 });
 
