@@ -19,8 +19,6 @@ const userSchema = mongoose.Schema({
 
 userSchema.pre("save", function (next) {
 	const user = this;
-
-	console.log(user);
 	if (user.isModified('password')) {
 		// 비밀번호를 암호화 시킨다.
 

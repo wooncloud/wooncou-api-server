@@ -8,6 +8,7 @@ const cookieParser = require("cookie-parser");
 const { User } = require("./models/User");
 const { Post } = require("./models/Post");
 const { Tag } = require("./models/Tags");
+const { Report } = require("./models/Report");
 const { auth } = require("./middleware/auth");
 
 // [bodyParser Setting]
@@ -26,12 +27,11 @@ mongoose.connect(config.mongoURI, {
 .catch(err => console.log(err))
 
 
-app.listen(port, () => console.log(`example app listening on port ${port}!`))
+app.listen(port, () => console.log(`Wooncou app listening on port ${port}!`))
 
 // ----------------------------------------------------------
 app.get('/', (req, res) => {
 	res.send('hello world!')
-	console.log(req.cookies.x_auth);
 });
 
 app.get('/api/hello', (req, res) => {
@@ -54,7 +54,6 @@ app.put('/api/users/register', (req, res) => {
 });
 
 app.post('/api/users/login', (req, res) => {
-	console.log(req);
 	// 요청한 이메일 찾기
 	User.findOne({ email: req.body.email }, (err, user) => {
 		if(!user) {
@@ -115,6 +114,8 @@ app.get("/api/users/logout", auth, (req, res) => {
 		})
 });
 
+// ----- POST -----
+
 // 글 리스트 가져오기
 app.get("/api/post-list",  (req, res) => {
 	const search = req.query.search;
@@ -142,7 +143,6 @@ app.get("/api/post-list",  (req, res) => {
 	}
 });
 
-// ----- POST -----
 // 포스트 읽기
 app.get("/api/post",  (req, res) => {
 	const filter = { _id: req.body.id };
@@ -200,7 +200,60 @@ app.get("/api/tags",  (req, res) => {
 		if (err) {
 			return res.json({ success: false, err });
 		} else {
-			return res.status(200).json({ success: true, posts: data });
+			return res.status(200).json({ success: true, tags: data });
 		}
-	}).sort([['tag_name', 1]]) // 최근 글
+	}).sort([['tag_name', 1]]) // 태그 이름으로 sort
+});
+
+
+// ----- Report -----
+app.get("/api/report",  (req, res) => {
+	Report.find((err, data) => {
+		if (err) {
+			return res.json({ success: false, err });
+		} else {
+			return res.status(200).json({ success: true, reports: data });
+		}
+	})
+	.sort([['complete_date', 1], ['report_date', 1]])
+	// sort 순서 : 완료 여부, 최근 리포트
+});
+
+// 리포트 보기
+app.get("/api/report/:id",  (req, res) => {
+	console.log(req.params);
+
+	Report.findById(filter,(err, data) => {
+		if (err) {
+			return res.json({ success: false, err });
+		} else {
+			return res.status(200).json({ success: true, report: data });
+		}
+	});
+});
+
+// 리포트 쓰기
+app.post("/api/report", (req, res) => {
+	const report = new Report(req.body);
+	report.save((err) => {
+		if (err) {
+			return res.json({ success: false, err });
+		} else {
+			return res.status(200).json({ success: true });
+		}
+	});
+});
+
+// 리포트 처리 완료 설정
+app.put("/api/report", (req, res) => {
+	const filter = { _id: req.body.id };
+	const update = { complete_date: Date.now() };
+
+	Report.findByIdAndUpdate(filter, update, (err, data) => {
+		if (err) {
+			return res.json({ success: false, err });
+		} else {
+			return res.status(200).json({ success: true, date: update.complete_date });
+		}
+	});
 });
