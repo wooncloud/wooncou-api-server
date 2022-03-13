@@ -117,15 +117,29 @@ app.get("/api/users/logout", auth, (req, res) => {
 
 // 글 리스트 가져오기
 app.get("/api/post-list",  (req, res) => {
-	Post.find((err, data) => {
-		if (err) {
-			return res.json({ success: false, err });
-		} else {
-			return res.status(200).json({ success: true, posts: data });
-		}
-	}).sort([['date', -1]]) // 최근 글
-	// .limit( 페이징 )
-	// .sort( [[]] )
+	const search = req.query.search;
+
+	if(!search) {
+		// 일반 검색
+		Post.find((err, data) => {
+			if (err) {
+				return res.json({ success: false, err });
+			} else {
+				return res.status(200).json({ success: true, posts: data });
+			}
+		}).sort([['date', -1]]) // 최근 글
+		// .limit( 페이징 )
+		// .sort( [[]] )
+	} else {
+		// LIKE 검색
+		Post.find({title: {$regex: `.*${search}.*`, $options: "ig"}}, (err, data) => {
+			if (err) {
+				return res.json({ success: false, err });
+			} else {
+				return res.status(200).json({ success: true, posts: data });
+			}
+		}).sort([['date', -1]]) // 최근 글
+	}
 });
 
 // ----- POST -----
@@ -167,7 +181,7 @@ app.post("/api/post", (req, res) => {
 // 포스트 삭제
 app.delete("/api/post", (req, res) => {
 	const filter = { _id: req.body.id };
-	const update = { deleted: "Y" };
+	const update = { deleted: req.body.deleted };
 
 	Post.findByIdAndUpdate(filter, update, (err, data) => {
 		if (err) {
