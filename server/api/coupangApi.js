@@ -1,25 +1,18 @@
 const axios = require('axios');
 const { generateHmac } = require('./hmacGenerator');
-const keys = require('../config/coupang');
+const { ACCESS_KEY, SECRET_KEY } = require('../config/coupang');
 
-const REQUEST_METHOD = "POST";
 const DOMAIN = "https://api-gateway.coupang.com";
-const URL = "/v2/providers/affiliate_open_api/apis/openapi/v1/deeplink";
+const BASE_URL = "/v2/providers/affiliate_open_api/apis/openapi";
 
-// Replace with your own ACCESS_KEY and SECRET_KEY
-const ACCESS_KEY = keys.ACCESS_KEY;
-const SECRET_KEY = keys.SECRET_KEY;
+/**
+ * 딥 링크 가져오기
+ * @param {*} value json object
+ */
+const getDeeplink = async (value) => {
+	const REQUEST_METHOD = "POST";
+	const URL = BASE_URL + "/deeplink"
 
-// example
-const REQUEST = {
-	"coupangUrls": [
-		"https://www.coupang.com/np/search?component=&q=good&channel=user",
-		"https://www.coupang.com/np/coupangglobal"
-	]
-};
-
-// 이부분 module.exports
-(async () => {
 	const authorization = generateHmac(REQUEST_METHOD, URL, SECRET_KEY, ACCESS_KEY);
 	axios.defaults.baseURL = DOMAIN;
 
@@ -28,12 +21,60 @@ const REQUEST = {
 			method: REQUEST_METHOD,
 			url: URL,
 			headers: { Authorization: authorization },
-			data: REQUEST
+			data: value
 		});
-		console.log(response.data);
+		return response.data;
 	} catch (err) {
-		console.error(err.response.data);
+		return err.response.data;
 	}
-})();
+}
 
-module.exports = ""; // 연결하기
+/**
+ * 검색한 내용으로 랭킹 뽑기
+ * @param {*} keyword 검색 키워드
+ * @returns 
+ */
+const getSearchRanking = async (keyword) => {
+	const REQUEST_METHOD = "GET";
+	const URL = `${BASE_URL}/products/search?keyword=${encodeURIComponent(keyword)}`;
+	console.log(URL);
+
+	const authorization = generateHmac(REQUEST_METHOD, URL, SECRET_KEY, ACCESS_KEY);
+	axios.defaults.baseURL = DOMAIN;
+
+	try {
+		const response = await axios.request({
+			method: REQUEST_METHOD,
+			url: URL,
+			headers: { Authorization: authorization }
+		});
+		return response.data;
+	} catch (err) {
+		return err.response.data;
+	}
+}
+
+/**
+ * 골드박스 가져오기
+ * @returns 
+ */
+const getGoldbox = async () => {
+	const REQUEST_METHOD = "GET";
+	const URL = BASE_URL + "/v1/products/goldbox";
+
+	const authorization = generateHmac(REQUEST_METHOD, URL, SECRET_KEY, ACCESS_KEY);
+	axios.defaults.baseURL = DOMAIN;
+
+	try {
+		const response = await axios.request({
+			method: REQUEST_METHOD,
+			url: URL,
+			headers: { Authorization: authorization }
+		});
+		return response.data;
+	} catch (err) {
+		return err.response.data;
+	}
+}
+
+module.exports = { getDeeplink, getSearchRanking,  getGoldbox };
