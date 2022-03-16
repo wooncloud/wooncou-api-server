@@ -37,7 +37,6 @@ const getDeeplink = async (value) => {
 const getSearchRanking = async (keyword) => {
 	const REQUEST_METHOD = "GET";
 	const URL = `${BASE_URL}/products/search?keyword=${encodeURIComponent(keyword)}`;
-	console.log(URL);
 
 	const authorization = generateHmac(REQUEST_METHOD, URL, SECRET_KEY, ACCESS_KEY);
 	axios.defaults.baseURL = DOMAIN;

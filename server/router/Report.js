@@ -15,7 +15,7 @@ router.get("/report",  (req, res) => {
 
 // 리포트 보기
 router.get("/report/:id",  (req, res) => {
-	console.log(req.params);
+	const filter = { _id: req.params.id }
 
 	Report.findById(filter,(err, data) => {
 		if (err) {
