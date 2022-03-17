@@ -4,7 +4,7 @@ const port = 5000
 const config = require('./config/key');
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
-
+const axios = require('axios');
 
 // [bodyParser Setting]
 app.use(bodyParser.urlencoded({extended: true}));
