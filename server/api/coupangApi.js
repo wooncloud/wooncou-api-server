@@ -24,11 +24,18 @@ const getDeeplink = async (value) => {
 	data.totalPrice = $(".prod-price .prod-major-price:not([style*='display:none']) .total-price").text().trim();
 	data.count = $(".prod-buy-header .count").text().trim();
 	data.starRating = $(".prod-buy-header .rating-star-num").prop("style").width;
-
-	const authorization = generateHmac(REQUEST_METHOD, URL, SECRET_KEY, ACCESS_KEY);
-	axios.defaults.baseURL = DOMAIN;
+	data.images = [];
+	const imageUrls = $(".prod-image .prod-image__items .prod-image__item img");
+	for (const imgUrl of imageUrls) {
+		const thumb = imgUrl.attribs["data-src"];
+		const src = "https:" + thumb.replace(/48x48ex/ig, "492x492ex");
+		data.images.push(src);
+	}
 
 	try {
+		const authorization = generateHmac(REQUEST_METHOD, URL, SECRET_KEY, ACCESS_KEY);
+		axios.defaults.baseURL = DOMAIN;
+
 		const response = await axios.request({
 			method: REQUEST_METHOD,
 			url: URL,
@@ -38,9 +45,15 @@ const getDeeplink = async (value) => {
 
 		data.link = response.data.data[0].shortenUrl;
 		
-		return data;
+		const result = {
+			result: "success",
+			message: "",
+			data: data
+		}
+		return result;
 	} catch (err) {
-		return err.response.data;
+		console.log(err);
+		return null;
 	}
 }
 
@@ -53,10 +66,10 @@ const getSearchRanking = async (keyword) => {
 	const REQUEST_METHOD = "GET";
 	const URL = `${BASE_URL}/products/search?keyword=${encodeURIComponent(keyword)}`;
 
-	const authorization = generateHmac(REQUEST_METHOD, URL, SECRET_KEY, ACCESS_KEY);
-	axios.defaults.baseURL = DOMAIN;
-
 	try {
+		const authorization = generateHmac(REQUEST_METHOD, URL, SECRET_KEY, ACCESS_KEY);
+		axios.defaults.baseURL = DOMAIN;
+
 		const response = await axios.request({
 			method: REQUEST_METHOD,
 			url: URL,
@@ -76,10 +89,10 @@ const getGoldbox = async () => {
 	const REQUEST_METHOD = "GET";
 	const URL = BASE_URL + "/v1/products/goldbox";
 
-	const authorization = generateHmac(REQUEST_METHOD, URL, SECRET_KEY, ACCESS_KEY);
-	axios.defaults.baseURL = DOMAIN;
-
 	try {
+		const authorization = generateHmac(REQUEST_METHOD, URL, SECRET_KEY, ACCESS_KEY);
+		axios.defaults.baseURL = DOMAIN;
+	
 		const response = await axios.request({
 			method: REQUEST_METHOD,
 			url: URL,
@@ -106,4 +119,4 @@ const getHtml = async (value) => {
 	}
 }
 
-module.exports = { getDeeplink, getSearchRanking,  getGoldbox };
+module.exports = { getDeeplink, getSearchRanking, getGoldbox };
