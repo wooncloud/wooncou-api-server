@@ -44,13 +44,7 @@ const getDeeplink = async (value) => {
 		});
 
 		data.link = response.data.data[0].shortenUrl;
-		
-		const result = {
-			result: "success",
-			message: "",
-			data: data
-		}
-		return result;
+		return data;
 	} catch (err) {
 		console.log(err);
 		return null;
