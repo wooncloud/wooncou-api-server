@@ -5,6 +5,7 @@ const { ACCESS_KEY, SECRET_KEY } = require('../config/coupang');
 
 const DOMAIN = "https://api-gateway.coupang.com";
 const BASE_URL = "/v2/providers/affiliate_open_api/apis/openapi";
+const COUPANG_BASE_URL = "https://www.coupang.com/vp/products/";
 
 const crawlingCoupangInfo = async (url) => {
 	const data = {};
@@ -21,7 +22,7 @@ const crawlingCoupangInfo = async (url) => {
 	const imageUrls = $(".prod-image .prod-image__items .prod-image__item img");
 	for (const imgUrl of imageUrls) {
 		const thumb = imgUrl.attribs["data-src"];
-		const src = "https:" + thumb.replace(/48x48ex/ig, "492x492ex");
+		const src = "https:" + thumb.replace(/thumbnails\/remote\/48x48ex\//ig, "");
 		data.images.push(src);
 	}
 
@@ -65,6 +66,15 @@ const getDeeplink = async (value) => {
 const getSearchRanking = async (keyword) => {
 	const REQUEST_METHOD = "GET";
 	const URL = `${BASE_URL}/products/search?keyword=${encodeURIComponent(keyword)}`;
+
+	
+	for (const i in tempData.data.data.productData) {
+		const p = tempData.data.data.productData[i];
+		const productUrl = COUPANG_BASE_URL + p.productId;
+		const crawledData = await crawlingCoupangInfo(productUrl);
+		tempData.data.data.productData[i].extends = JSON.parse(JSON.stringify(crawledData));
+	}
+
 	return tempData;
 
 	try {
@@ -76,6 +86,15 @@ const getSearchRanking = async (keyword) => {
 			url: URL,
 			headers: { Authorization: authorization }
 		});
+
+		// crawling
+		for (const i in response.data.data.productData) {
+			const p = response.data.data.productData[i];
+			const productUrl = COUPANG_BASE_URL + p.productId;
+			const crawledData = await crawlingCoupangInfo(productUrl);
+			response.data.data.productData[i].extends = JSON.parse(JSON.stringify(crawledData));
+		}
+
 		return response.data;
 	} catch (err) {
 		return err.response.data;
@@ -120,126 +139,126 @@ const getHtml = async (value) => {
 	}
 }
 const tempData = {
-    "success": true,
-    "data": {
-        "rCode": "0",
-        "rMessage": "게시글 작성 시, \"파트너스 활동을 통해 일정액의 수수료를 제공받을 수 있음\"을 기재하셔야 합니다",
-        "data": {
-            "landingUrl": "https://link.coupang.com/re/AFFSRP?lptag=AF8451192&pageKey=%EB%85%B8%ED%8A%B8%EB%B6%81&traceid=V0-163-146d5d1a4c3ad405",
-            "productData": [
-                {
-                    "productId": 6398790876,
-                    "productName": "MSI 2022 Prestige 15.6, 카본그레이, MS-16S1, 코어i7, 512GB, 16GB, Free DOS",
-                    "productPrice": 1649000,
-                    "productImage": "https://static.coupangcdn.com/image/rs_quotation_api/3z2gde9c/47193d6b55bb4a5999eb5e536ebbf5a5.jpg",
-                    "productUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF8451192&pageKey=6398790876&itemId=13674283161&vendorItemId=80926244507&traceid=V0-153-cf9599d2d043547d",
-                    "keyword": "노트북",
-                    "rank": 1,
-                    "isRocket": true,
-                    "isFreeShipping": false
-                },
-                {
-                    "productId": 6398753538,
-                    "productName": "MSI 2022 Summit E13 Flip Evo, 블랙 + 골드, Summit E13 Flip Evo A12MT 009KR, 코어i7, 1024GB, 16GB, WIN11 Home",
-                    "productPrice": 1999000,
-                    "productImage": "https://static.coupangcdn.com/image/retail/images/2022/03/16/16/7/d7eee17b-f88b-4736-b606-fced4a162cfc.JPG",
-                    "productUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF8451192&pageKey=6398753538&itemId=13674101914&vendorItemId=80926066597&traceid=V0-153-eebfb44e0a6e969d",
-                    "keyword": "노트북",
-                    "rank": 2,
-                    "isRocket": true,
-                    "isFreeShipping": false
-                },
-                {
-                    "productId": 6056850501,
-                    "productName": "에이수스 2021 VivoBook 14.1, 드리미 화이트, 코어i3 11세대, 256GB, 4GB, Free DOS, X413EA-CP003",
-                    "productPrice": 499000,
-                    "productImage": "https://static.coupangcdn.com/image/rs_quotation_api/d00heobh/63745f53d4334de3a13423a9fe64a2b9.jpg",
-                    "productUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF8451192&pageKey=6056850501&itemId=11121796517&vendorItemId=78400481014&traceid=V0-153-7aba6f10d3985e4f",
-                    "keyword": "노트북",
-                    "rank": 3,
-                    "isRocket": true,
-                    "isFreeShipping": false
-                },
-                {
-                    "productId": 5358757879,
-                    "productName": "삼성전자 2021 노트북 플러스2 15.6, 퓨어 화이트, 셀러론, NVMe128GB, 8GB, WIN10 Pro, NT550XDA-K14AW",
-                    "productPrice": 519510,
-                    "productImage": "https://static.coupangcdn.com/image/retail/images/1606466026622356-49007cab-6880-46d0-8b20-4816f10541b5.jpg",
-                    "productUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF8451192&pageKey=5358757879&itemId=7416308410&vendorItemId=74707281741&traceid=V0-153-3ee10f6c805b6a78",
-                    "keyword": "노트북",
-                    "rank": 4,
-                    "isRocket": true,
-                    "isFreeShipping": false
-                },
-                {
-                    "productId": 322895378,
-                    "productName": "이태원클라쓰북 그램스타일 노트북 풀패키지미개봉 NB141LTN41 8세대 14 IPS FHD 윈10탑재, 그레이, NB141LTN41 [32G+SD64G]",
-                    "productPrice": 299000,
-                    "productImage": "https://static.coupangcdn.com/image/vendor_inventory/e5d5/529092ec64ebac696238ea8265ce8b4785260b851e1069190a4a657c47f2.jpg",
-                    "productUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF8451192&pageKey=322895378&itemId=1034232693&vendorItemId=5485152151&traceid=V0-153-d8a3411d285e8c29",
-                    "keyword": "노트북",
-                    "rank": 5,
-                    "isRocket": false,
-                    "isFreeShipping": true
-                },
-                {
-                    "productId": 6389123629,
-                    "productName": "삼성전자 노트북9 METAL NT901X5L 가볍고 슬림한 1.29kg 코어i7 대용량 SSD512GB 윈10 탑재, WIN10 Home, 8GB, 512GB, 그레이",
-                    "productPrice": 697000,
-                    "productImage": "https://static.coupangcdn.com/image/vendor_inventory/d92a/5e59ed8162691abea4394141acc3d85fb8ecf96cc64a4fc4245a971979e6.jpg",
-                    "productUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF8451192&pageKey=6389123629&itemId=13610833797&vendorItemId=80937415722&traceid=V0-153-928ee94c3fd50897",
-                    "keyword": "노트북",
-                    "rank": 6,
-                    "isRocket": false,
-                    "isFreeShipping": true
-                },
-                {
-                    "productId": 4679989253,
-                    "productName": "LG전자 2021 울트라 PC 15.6 + HDMI케이블 + 무선마우스 + 마우스패드 + 키스킨, 화이트, 코어i5 11세대, 256GB, 8GB, Free DOS, 15UD50P-GX50K",
-                    "productPrice": 799000,
-                    "productImage": "https://static.coupangcdn.com/image/rs_quotation_api/rmvdop7s/cd49540977c94f6da17c3da8baa87df9.jpg",
-                    "productUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF8451192&pageKey=4679989253&itemId=6442545635&vendorItemId=73737059406&traceid=V0-153-d92de13d7ef941c2",
-                    "keyword": "노트북",
-                    "rank": 7,
-                    "isRocket": true,
-                    "isFreeShipping": false
-                },
-                {
-                    "productId": 4841548763,
-                    "productName": "LG전자 2020 울트라 PC 14, 화이트, 셀러론, 512GB, 8GB, WIN10 Home, 14U390-ME1TK",
-                    "productPrice": 526000,
-                    "productImage": "https://static.coupangcdn.com/image/rs_quotation_api/y7huhkcv/98d514ad1caa4012952812e2bb95f611.jpg",
-                    "productUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF8451192&pageKey=4841548763&itemId=6257652932&vendorItemId=73553348809&traceid=V0-153-9a25bd3005b7050e",
-                    "keyword": "노트북",
-                    "rank": 8,
-                    "isRocket": true,
-                    "isFreeShipping": false
-                },
-                {
-                    "productId": 6396298833,
-                    "productName": "삼성전자 코어i7 지포스 게이밍노트북 노트북 NT871Z5G 네이비, WIN10 Home, 8GB, 256GB",
-                    "productPrice": 539000,
-                    "productImage": "https://static.coupangcdn.com/image/vendor_inventory/29e7/5edd0efd17210f9d741c90700a3704dc4cdad6fd9c2542351fcce059ea99.jpeg",
-                    "productUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF8451192&pageKey=6396298833&itemId=13659405316&vendorItemId=80937447100&traceid=V0-153-7bf1744f42156d7d",
-                    "keyword": "노트북",
-                    "rank": 9,
-                    "isRocket": false,
-                    "isFreeShipping": true
-                },
-                {
-                    "productId": 6250688061,
-                    "productName": "베이직스 2021 베이직북13 2세대, 베이직 골드, BB1321FW, 셀러론, 256GB, 8GB, WIN10 Home",
-                    "productPrice": 379000,
-                    "productImage": "https://static.coupangcdn.com/image/retail/images/13149862488637213-4bb77df0-85c6-496e-a2d3-599f8715b504.jpg",
-                    "productUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF8451192&pageKey=6250688061&itemId=12668966123&vendorItemId=79936102915&traceid=V0-153-65e9a34b2f51c744",
-                    "keyword": "노트북",
-                    "rank": 10,
-                    "isRocket": true,
-                    "isFreeShipping": false
-                }
-            ]
-        }
-    }
+	"success": true,
+	"data": {
+		"rCode": "0",
+		"rMessage": "게시글 작성 시, \"파트너스 활동을 통해 일정액의 수수료를 제공받을 수 있음\"을 기재하셔야 합니다",
+		"data": {
+			"landingUrl": "https://link.coupang.com/re/AFFSRP?lptag=AF8451192&pageKey=VANANA&traceid=V0-163-9573ccd299d21f74",
+			"productData": [
+				{
+					"productId": 6357798374,
+					"productName": "VSYOY 리본 헵번 프렌치 니트 원피스 봄 여성복 패션 v넥 스커트",
+					"productPrice": 39500,
+					"productImage": "https://static.coupangcdn.com/image/vendor_inventory/9ca0/2fde8339a543a101f502fad0a660c14f14839223f6dd828eff1549dfd145.jpg",
+					"productUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF8451192&pageKey=6357798374&itemId=13407105525&vendorItemId=80826031018&traceid=V0-153-551a2556c155bf12",
+					"keyword": "VANANA",
+					"rank": 1,
+					"isRocket": false,
+					"isFreeShipping": true,
+				},
+				{
+					"productId": 6335414476,
+					"productName": "VANANA2 여성 데일리 골지나시 워머 볼레로 크롭 가디건 세트 SET",
+					"productPrice": 29800,
+					"productImage": "https://static.coupangcdn.com/image/vendor_inventory/697a/66683259e841d5c25fa9bb7d5f86f776acf6e9c3cc88ef067ecbe529e570.jpg",
+					"productUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF8451192&pageKey=6335414476&itemId=13266156912&vendorItemId=80523804394&traceid=V0-153-03eabc88380448ad",
+					"keyword": "VANANA",
+					"rank": 2,
+					"isRocket": true,
+					"isFreeShipping": false,
+				},
+				{
+					"productId": 6371479650,
+					"productName": "VSYOY 패션 밍위안 니트 원피스 여성복 숄칼라 스커트",
+					"productPrice": 35000,
+					"productImage": "https://static.coupangcdn.com/image/vendor_inventory/7780/585ae39af783461b23b08a30ec1099586d53b98d9fca6c80f5a55f23ca8f.jpg",
+					"productUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF8451192&pageKey=6371479650&itemId=13497515592&vendorItemId=80826025805&traceid=V0-153-3e5ea5c38ad9531a",
+					"keyword": "VANANA",
+					"rank": 3,
+					"isRocket": false,
+					"isFreeShipping": true,
+				},
+				{
+					"productId": 6344943717,
+					"productName": "VSYOY봄 셔츠 원피스 여성복 년 허리 조임 슬림 미디 스커트 스커트",
+					"productPrice": 57500,
+					"productImage": "https://static.coupangcdn.com/image/vendor_inventory/cd0e/4f3631269c77b6b59551171606ddfb9bdf0dadfb1d4bfa201adcdf6480f0.jpg",
+					"productUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF8451192&pageKey=6344943717&itemId=13327199144&vendorItemId=80826145783&traceid=V0-153-bf12cd3cbcef92c6",
+					"keyword": "VANANA",
+					"rank": 4,
+					"isRocket": false,
+					"isFreeShipping": true,
+				},
+				{
+					"productId": 6070823361,
+					"productName": "VANANA2 국내생산 크롭기장 데일리 니트 볼레로 가디건 3color",
+					"productPrice": 19800,
+					"productImage": "https://static.coupangcdn.com/image/vendor_inventory/4557/9373c5b415ceb0932eacf5843f12d668323d0d6670917c78da3b4c6ca240.jpg",
+					"productUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF8451192&pageKey=6070823361&itemId=11207876210&vendorItemId=78485460632&traceid=V0-153-d29cc8aa620f65a7",
+					"keyword": "VANANA",
+					"rank": 5,
+					"isRocket": false,
+					"isFreeShipping": false,
+				},
+				{
+					"productId": 6373182204,
+					"productName": "VSYOY 모던 빈티지 터틀넥 니트 원피스 여성복 반팔 타이트 스커트",
+					"productPrice": 39000,
+					"productImage": "https://static.coupangcdn.com/image/vendor_inventory/bc33/bbc68425d7689751af1cc4c37a9313e66f8e24ce82efe861adf3ba3515b8.jpg",
+					"productUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF8451192&pageKey=6373182204&itemId=13508106584&vendorItemId=80825999441&traceid=V0-153-51430fa2f4db12a1",
+					"keyword": "VANANA",
+					"rank": 6,
+					"isRocket": false,
+					"isFreeShipping": true,
+				},
+				{
+					"productId": 6275111777,
+					"productName": "VANANA2 여성 러블리 슬림핏 단추 앙고라 유라인 니트 긴팔 티셔츠",
+					"productPrice": 22800,
+					"productImage": "https://static.coupangcdn.com/image/vendor_inventory/46c8/5c4d769107634b1fa4f9651dae40a1db21a2ee46e565cac88d3de56bf7ab.jpg",
+					"productUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF8451192&pageKey=6275111777&itemId=12854010951&vendorItemId=80119422364&traceid=V0-153-272cc66294e14f3b",
+					"keyword": "VANANA",
+					"rank": 7,
+					"isRocket": false,
+					"isFreeShipping": false,
+				},
+				{
+					"productId": 5342115917,
+					"productName": "VANANA2 드래곤 플라이 여성 마담 선글라스 엄마 선글라스 미시 선글라스",
+					"productPrice": 16900,
+					"productImage": "https://static.coupangcdn.com/image/vendor_inventory/bd41/824200ea19f6281173837777443369e3c5067229a08d235289d05d69863a.png",
+					"productUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF8451192&pageKey=5342115917&itemId=7834064488&vendorItemId=75123844427&traceid=V0-153-1b5ecc6ac8450aca",
+					"keyword": "VANANA",
+					"rank": 8,
+					"isRocket": true,
+					"isFreeShipping": false,
+				},
+				{
+					"productId": 5884886407,
+					"productName": "VANANA2 더블체크 여성 간절기 크롭 셔츠 남방",
+					"productPrice": 19800,
+					"productImage": "https://static.coupangcdn.com/image/vendor_inventory/7376/d9045a2fd04118d7d419b1a667edd42585301163312e733805cd810e492e.jpg",
+					"productUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF8451192&pageKey=5884886407&itemId=10331573383&vendorItemId=77613789643&traceid=V0-153-75e62e934f7d1c6d",
+					"keyword": "VANANA",
+					"rank": 9,
+					"isRocket": false,
+					"isFreeShipping": false,
+				},
+				{
+					"productId": 6287332248,
+					"productName": "VANANA2 여성 사계절 슬림핏 카라 골지 5부 원피스",
+					"productPrice": 19800,
+					"productImage": "https://static.coupangcdn.com/image/vendor_inventory/0230/520bc5353236491ba8d8f27c33675d1eafec63515d759a9079b775705a1a.jpg",
+					"productUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF8451192&pageKey=6287332248&itemId=12937642605&vendorItemId=80202013380&traceid=V0-153-d77dae2d6b845207",
+					"keyword": "VANANA",
+					"rank": 10,
+					"isRocket": false,
+					"isFreeShipping": false,
+				}
+			]
+		}
+	}
 }
 
 module.exports = { getDeeplink, getSearchRanking, getGoldbox };

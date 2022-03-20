@@ -59,6 +59,27 @@ router.post("/post", (req, res) => {
 	});
 });
 
+// 임시저장
+router.post("/post/temp", (req, res) => {
+	const postData = {
+		title: req.body.title,
+		author: req.body.author,
+		content: req.body.content,
+		temp: true,
+	}
+
+	console.log(postData);
+
+	const post = new Post(postData);
+	post.save((err, data) => {
+		if (err) {
+			return res.json({ success: false, err });
+		} else {
+			return res.status(200).json({ success: true, data: data });
+		}
+	});
+});
+
 // 포스트 삭제
 router.delete("/post", (req, res) => {
 	const filter = { _id: req.body.id };
