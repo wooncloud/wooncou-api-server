@@ -43,35 +43,68 @@ router.post("/post", (req, res) => {
 		title: req.body.title,
 		author: req.body.author,
 		content: req.body.content,
-		tags: []
+		tags: req.body.tags,
 	}
 
-	postData.tags = Tag.findAndInsertTag(req.body.tags, (err, tagArr) => {
-		postData.tags = tagArr;
-		const post = new Post(postData);
-		post.save((err) => {
-			if (err) {
-				return res.json({ success: false, err });
-			} else {
-				return res.status(200).json({ success: true });
-			}
-		});
+	const post = new Post(postData);
+	post.save((err) => {
+		if (err) {
+			return res.json({ success: false, err });
+		} else {
+			return res.status(200).json({ success: true });
+		}
 	});
 });
 
-// 임시저장
+// 임시저장 put
+router.put("/post", (req, res) => {
+	const filter = { _id: req.body._id };
+	const update = {
+		title: req.body.title,
+		content: req.body.content,
+		tags: req.body.tags,
+	};
+
+	Post.findByIdAndUpdate(filter, update, (err, data) => {
+		if (err) {
+			return res.json({ success: false, err });
+		} else {
+			return res.status(200).json({ success: true, data: data });
+		}
+	});
+});
+
+// 임시저장 post
 router.post("/post/temp", (req, res) => {
 	const postData = {
 		title: req.body.title,
 		author: req.body.author,
 		content: req.body.content,
+		tags: req.body.tags,
 		temp: true,
 	}
 
-	console.log(postData);
-
 	const post = new Post(postData);
 	post.save((err, data) => {
+		if (err) {
+			return res.json({ success: false, err });
+		} else {
+			return res.status(200).json({ success: true, data: data });
+		}
+	});
+});
+
+// 임시저장 put
+router.put("/post/temp", (req, res) => {
+	const filter = { _id: req.body._id };
+	const update = {
+		title: req.body.title,
+		content: req.body.content,
+		tags: req.body.tags,
+		temp: true,
+	};
+
+	Post.findByIdAndUpdate(filter, update, (err, data) => {
 		if (err) {
 			return res.json({ success: false, err });
 		} else {
