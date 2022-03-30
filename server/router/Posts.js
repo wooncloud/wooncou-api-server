@@ -44,6 +44,7 @@ router.post("/post", (req, res) => {
 		author: req.body.author,
 		content: req.body.content,
 		tags: req.body.tags,
+		temp: false,
 	}
 
 	const post = new Post(postData);
@@ -56,13 +57,14 @@ router.post("/post", (req, res) => {
 	});
 });
 
-// 임시저장 put
+// 포스트 수정
 router.put("/post", (req, res) => {
 	const filter = { _id: req.body._id };
 	const update = {
 		title: req.body.title,
 		content: req.body.content,
 		tags: req.body.tags,
+		temp: false,
 	};
 
 	Post.findByIdAndUpdate(filter, update, (err, data) => {

@@ -10,7 +10,7 @@ const postSchema = mongoose.Schema({
     deleted: { type: String, required: true, default: 'N' },
     content: { type: String, required: true },
     temp: { type: Boolean, required: true, default: false },
-    tags: [{ type: Schema.Types.ObjectId, ref: 'Tag' }],
+    tags: [{ type: Map, of: { type: String }, ref: 'Tag' }],
 });
 
 const Post = mongoose.model('Post', postSchema);
