@@ -43,6 +43,7 @@ router.post("/post", (req, res) => {
 		title: req.body.title,
 		author: req.body.author,
 		content: req.body.content,
+		title_image: req.body.title_image,
 		tags: req.body.tags,
 		temp: false,
 	}
@@ -63,6 +64,7 @@ router.put("/post", (req, res) => {
 	const update = {
 		title: req.body.title,
 		content: req.body.content,
+		title_image: req.body.title_image,
 		tags: req.body.tags,
 		temp: false,
 	};
@@ -82,6 +84,7 @@ router.post("/post/temp", (req, res) => {
 		title: req.body.title,
 		author: req.body.author,
 		content: req.body.content,
+		title_image: req.body.title_image,
 		tags: req.body.tags,
 		temp: true,
 	}
@@ -102,6 +105,7 @@ router.put("/post/temp", (req, res) => {
 	const update = {
 		title: req.body.title,
 		content: req.body.content,
+		title_image: req.body.title_image,
 		tags: req.body.tags,
 		temp: true,
 	};
