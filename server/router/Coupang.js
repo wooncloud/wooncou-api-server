@@ -1,6 +1,8 @@
 const router = require('express').Router();
 const { getDeeplink, getSearchRanking, getGoldbox } = require('../api/coupangApi');
+const { Goldbox } = require('../models/Goldbox');
 
+// 딥링크
 router.post("/deeplink", async (req, res) => {
 	const url = {
 		"coupangUrls": [req.body.url]
@@ -16,6 +18,7 @@ router.post("/deeplink", async (req, res) => {
 });
 // deeplink 여러개 받는 것도 만들어야 할듯
 
+// 검색
 router.get("/search", async (req, res) => {
 	const keyword = req.query.keyword;
 
@@ -28,13 +31,22 @@ router.get("/search", async (req, res) => {
 	}
 });
 
-router.get("/goldbox", async (req, res) => {
+// 골드박스
+router.post("/goldbox", async (req, res) => {
 	const data = await getGoldbox();
 	if (!data) {
 		err = { success: false, message: "검색 결과가 없습니다." }
 		return res.status(200).json(err);
 	} else {
-		return res.status(200).json({ success: true, data: data });
+		await Goldbox.deleteMany({});
+
+		Goldbox.insertMany(data.data, (err) => {
+			if (err) {
+				return res.json({ success: false, err });
+			} else {
+				return res.status(200).json({ success: true });
+			}
+		});
 	}
 });
 

@@ -30,11 +30,15 @@ const postsRouter = require('./router/Posts');
 const tagsRouter = require('./router/Tags');
 const reportRouter = require('./router/Report');
 const coupangRouter = require('./router/Coupang');
+const goldbox = require('./router/Goldbox');
+const common = require('./router/Common');
 app.use('/hello', helloRouter);
 app.use('/api/users', usersRouter);
 app.use('/api', postsRouter);
 app.use('/api', tagsRouter);
 app.use('/api', reportRouter);
 app.use('/api/coupang', coupangRouter);
+app.use('/api/goldbox', goldbox);
+app.use('/api/common', common);
 
 app.listen(port, () => console.log(`Wooncou app listening on port ${port}!`))

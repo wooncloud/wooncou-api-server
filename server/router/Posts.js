@@ -3,12 +3,12 @@ const { Post } = require("../models/Post");
 
 // 포스트 읽기
 router.get("/post",  (req, res) => {
-	const filter = {
-		_id: req.query.id, 
-		search: req.query.search 
-	};
+	const page = +(req.query.page ?? 1);
+	const count = +(req.query.count ?? 20);
+	const filter = { temp: false, deleted: "N" };
 
-	if(filter._id) { // detail
+	if(req.query.id) { // detail
+		filter._id = req.query.id;
 		Post.findOne(filter, (err, data) => {
 			if (err) {
 				return res.json({ success: false, err });
@@ -16,26 +16,71 @@ router.get("/post",  (req, res) => {
 				return res.status(200).json({ success: true, posts: data });
 			}
 		})
-	} else if (filter.search) { // 리스트 like 검색
-		Post.find({title: {$regex: `.*${filter.search}.*`, $options: "ig"}}, (err, data) => {
+	} else if (req.query.search) { // 리스트 like 검색
+		filter.title = {$regex: `.*${filter.search}.*`, $options: "ig"};
+		Post.find(filter, (err, data) => {
 			if (err) {
 				return res.json({ success: false, err });
 			} else {
 				return res.status(200).json({ success: true, posts: data });
 			}
 		}).sort([['date', -1]]) // 최근 글
+		.limit(count)
+		.skip((count * (page - 1)))
 	} else { // 전체 리스트
-		Post.find((err, data) => {
+		Post.find(filter, (err, data) => {
 			if (err) {
 				return res.json({ success: false, err });
 			} else {
 				return res.status(200).json({ success: true, posts: data });
 			}
 		}).sort([['date', -1]]) // 최근 글
-		// .limit( 페이징 )
-		// .sort( [[]] )
+		.limit(count)
+		.skip((count * (page - 1)))
 	}
 });
+
+/**
+ * 최근 글 보기
+ */
+router.get("/post/latest",  (req, res) => {
+	const page = +(req.query.page ?? 1);
+	const count = +(req.query.count ?? 20);
+	const filter = { temp: false, deleted: "N" };
+
+	Post.find(filter, (err, data) => {
+		if (err) {
+			return res.json({ success: false, err });
+		} else {
+			return res.status(200).json({ success: true, posts: data });
+		}
+	}).sort([['date', -1]]) // 최근 글
+	.limit(count)
+	.skip((count * (page - 1)))
+});
+
+/**
+ * 최다 뷰 보기
+ */
+router.get("/post/most-view",  (req, res) => {
+	const page = +(req.query.page ?? 1);
+	const count = +(req.query.count ?? 20);
+	const filter = { temp: false, deleted: "N" };
+
+	Post.find(filter, (err, data) => {
+		if (err) {
+			return res.json({ success: false, err });
+		} else {
+			return res.status(200).json({ success: true, posts: data });
+		}
+	}).sort([['views', -1]]) // 최근 글
+	.limit(count)
+	.skip((count * (page - 1)))
+});
+
+/**
+ * 추천 픽
+ */
 
 // 포스트 쓰기
 router.post("/post", (req, res) => {
