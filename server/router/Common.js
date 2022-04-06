@@ -6,7 +6,7 @@ router.get("/main", async (req, res) => {
 	const recommendCount = 4;
 	const goldboxCount = 6;
 	const mostViewCount = 3;
-	const latestCount = 5;
+	const latestCount = 6;
 	
 	const mainData = {
 		recommend: null,

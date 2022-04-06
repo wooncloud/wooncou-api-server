@@ -40,6 +40,44 @@ router.get("/post",  (req, res) => {
 	}
 });
 
+router.get("/admin/post",  (req, res) => {
+	const page = +(req.query.page ?? 1);
+	const count = +(req.query.count ?? 20);
+	const filter = { };
+
+	if(req.query.id) { // detail
+		filter._id = req.query.id;
+		Post.findOne(filter, (err, data) => {
+			if (err) {
+				return res.json({ success: false, err });
+			} else {
+				return res.status(200).json({ success: true, posts: data });
+			}
+		})
+	} else if (req.query.search) { // 리스트 like 검색
+		filter.title = {$regex: `.*${filter.search}.*`, $options: "ig"};
+		Post.find(filter, (err, data) => {
+			if (err) {
+				return res.json({ success: false, err });
+			} else {
+				return res.status(200).json({ success: true, posts: data });
+			}
+		}).sort([['date', -1]]) // 최근 글
+		.limit(count)
+		.skip((count * (page - 1)))
+	} else { // 전체 리스트
+		Post.find(filter, (err, data) => {
+			if (err) {
+				return res.json({ success: false, err });
+			} else {
+				return res.status(200).json({ success: true, posts: data });
+			}
+		}).sort([['date', -1]]) // 최근 글
+		.limit(count)
+		.skip((count * (page - 1)))
+	}
+});
+
 /**
  * 최근 글 보기
  */

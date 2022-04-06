@@ -67,14 +67,6 @@ const getSearchRanking = async (keyword) => {
 	const REQUEST_METHOD = "GET";
 	const URL = `${BASE_URL}/products/search?keyword=${encodeURIComponent(keyword)}`;
 
-	
-	for (const i in tempData.data.data.productData) {
-		const p = tempData.data.data.productData[i];
-		const productUrl = COUPANG_BASE_URL + p.productId;
-		const crawledData = await crawlingCoupangInfo(productUrl);
-		tempData.data.data.productData[i].extends = JSON.parse(JSON.stringify(crawledData));
-	}
-
 	try {
 		const authorization = generateHmac(REQUEST_METHOD, URL, SECRET_KEY, ACCESS_KEY);
 		axios.defaults.baseURL = DOMAIN;
