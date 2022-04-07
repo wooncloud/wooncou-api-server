@@ -7,37 +7,34 @@ router.get("/post",  (req, res) => {
 	const count = +(req.query.count ?? 20);
 	const filter = { temp: false, deleted: "N" };
 
-	if(req.query.id) { // detail
-		filter._id = req.query.id;
-		Post.findOne(filter, (err, data) => {
-			if (err) {
-				return res.json({ success: false, err });
-			} else {
-				return res.status(200).json({ success: true, posts: data });
-			}
-		})
-	} else if (req.query.search) { // 리스트 like 검색
-		filter.title = {$regex: `.*${filter.search}.*`, $options: "ig"};
-		Post.find(filter, (err, data) => {
-			if (err) {
-				return res.json({ success: false, err });
-			} else {
-				return res.status(200).json({ success: true, posts: data });
-			}
-		}).sort([['date', -1]]) // 최근 글
-		.limit(count)
-		.skip((count * (page - 1)))
-	} else { // 전체 리스트
-		Post.find(filter, (err, data) => {
-			if (err) {
-				return res.json({ success: false, err });
-			} else {
-				return res.status(200).json({ success: true, posts: data });
-			}
-		}).sort([['date', -1]]) // 최근 글
-		.limit(count)
-		.skip((count * (page - 1)))
+	console.log(req.query);
+	if (req.query.search) { // 리스트 like 검색
+		filter.title = {$regex: `.*${req.query.search}.*`, $options: "ig"};
 	}
+	if (req.query.tag) { // 태그
+		filter.tags = {$elemMatch: {tag_name: req.query.tag}};
+	}
+
+	Post.find(filter, (err, data) => {
+		if (err) {
+			return res.json({ success: false, err });
+		} else {
+			return res.status(200).json({ success: true, posts: data });
+		}
+	}).sort([['date', -1]]) // 최근 글
+	.limit(count)
+	.skip((count * (page - 1)))
+});
+
+router.get("/post/:id",  (req, res) => {
+	filter._id = req.query.id;
+	Post.findOne(filter, (err, data) => {
+		if (err) {
+			return res.json({ success: false, err });
+		} else {
+			return res.status(200).json({ success: true, posts: data });
+		}
+	})
 });
 
 router.get("/admin/post",  (req, res) => {
