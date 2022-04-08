@@ -7,7 +7,6 @@ router.get("/post",  (req, res) => {
 	const count = +(req.query.count ?? 20);
 	const filter = { temp: false, deleted: "N" };
 
-	console.log(req.query);
 	if (req.query.search) { // 리스트 like 검색
 		filter.title = {$regex: `.*${req.query.search}.*`, $options: "ig"};
 	}
@@ -27,7 +26,8 @@ router.get("/post",  (req, res) => {
 });
 
 router.get("/post/:id",  (req, res) => {
-	filter._id = req.query.id;
+	const filter = { temp: false, deleted: "N" };
+	filter._id = req.params.id;
 	Post.findOne(filter, (err, data) => {
 		if (err) {
 			return res.json({ success: false, err });
