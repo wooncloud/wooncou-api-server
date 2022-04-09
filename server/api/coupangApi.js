@@ -40,7 +40,8 @@ const getDeeplink = async (value) => {
 	const data = await crawlingCoupangInfo(orgUrl);
 
 	try {
-		const authorization = generateHmac(REQUEST_METHOD, URL, SECRET_KEY, ACCESS_KEY);
+		// const authorization = generateHmac(REQUEST_METHOD, URL, SECRET_KEY, ACCESS_KEY);
+		const authorization = generateHmac(REQUEST_METHOD, URL, ENV['COUPANG_SECRET_KEY'], ENV['ACCESS_KEY']);
 		axios.defaults.baseURL = DOMAIN;
 
 		const response = await axios.request({
