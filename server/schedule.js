@@ -1,9 +1,9 @@
 const schedule = require('node-schedule');
-const { getGoldbox } = require('../api/coupangApi');
-const { Goldbox } = require('../models/Goldbox');
+const { getGoldbox } = require('./api/coupangApi');
+const { Goldbox } = require('./models/Goldbox');
 
 function goldboxSchedule() {
-	const job = schedule.scheduleJob("10 30 7 * * *", function() {
+	const job = schedule.scheduleJob("10 30 7 * * *", async function() {
 		console.log("골드박스 데이터를 가져옵니다.");
 
 		const data = await getGoldbox();
