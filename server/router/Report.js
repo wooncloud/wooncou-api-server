@@ -2,6 +2,9 @@ const router = require('express').Router();
 const { Report } = require("../models/Report");
 
 router.get("/report",  (req, res) => {
+	const page = +(req.query.page ?? 1);
+	const count = +(req.query.count ?? 20);
+
 	Report.find((err, data) => {
 		if (err) {
 			return res.json({ success: false, err });
@@ -10,6 +13,8 @@ router.get("/report",  (req, res) => {
 		}
 	})
 	.sort([['complete_date', 1], ['report_date', 1]])
+	.limit(count)
+	.skip((count * (page - 1)))
 	// sort 순서 : 완료 여부, 최근 리포트
 });
 

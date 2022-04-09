@@ -19,7 +19,6 @@ router.post("/tags", (req, res) => {
 	Tag.findOne({ tag_name: req.body.tag_name }, (err, data) => {
 		if(err) return res.json({ success: false, err });
 
-		console.log(data);
 		if (!data) {
 			tag.save((err) => {
 				if (err) {

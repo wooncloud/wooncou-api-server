@@ -11,7 +11,6 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use(cookieParser());
 
-
 // [mongoose]
 const mongoose = require('mongoose');
 mongoose.connect(config.mongoURI, {
@@ -22,6 +21,9 @@ mongoose.connect(config.mongoURI, {
 }).then(() => console.log("Mongo DB connection..."))
 .catch(err => console.log(err))
 
+// [SCHEDULER]
+const scheduler = require('./schedule');
+scheduler.goldboxSchedule();
 
 // [ROUTER]
 const helloRouter = require('./router/Hello');

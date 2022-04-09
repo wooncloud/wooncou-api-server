@@ -7,10 +7,10 @@ router.get("/post",  (req, res) => {
 	const count = +(req.query.count ?? 20);
 	const filter = { temp: false, deleted: "N" };
 
-	if (req.query.search) { // 리스트 like 검색
+	if (req.query.search || req.query.search !== "") { // 리스트 like 검색
 		filter.title = {$regex: `.*${req.query.search}.*`, $options: "ig"};
 	}
-	if (req.query.tag) { // 태그
+	if (req.query.tag || req.query.tag !== "") { // 태그
 		filter.tags = {$elemMatch: {tag_name: req.query.tag}};
 	}
 
