@@ -40,7 +40,7 @@ const getDeeplink = async (value) => {
 	const data = await crawlingCoupangInfo(orgUrl);
 
 	try {
-		const authorization = generateHmac(REQUEST_METHOD, URL, config.COUPANG_SECRET_KEY, config.ACCESS_KEY);
+		const authorization = generateHmac(REQUEST_METHOD, URL, config.COUPANG_SECRET_KEY, config.COUPANG_ACCESS_KEY);
 		axios.defaults.baseURL = DOMAIN;
 
 		const response = await axios.request({
@@ -68,7 +68,7 @@ const getSearchRanking = async (keyword) => {
 	const URL = `${BASE_URL}/products/search?keyword=${encodeURIComponent(keyword)}`;
 
 	try {
-		const authorization = generateHmac(REQUEST_METHOD, URL, SECRET_KEY, ACCESS_KEY);
+		const authorization = generateHmac(REQUEST_METHOD, URL, config.COUPANG_SECRET_KEY, config.COUPANG_ACCESS_KEY);
 		axios.defaults.baseURL = DOMAIN;
 
 		const response = await axios.request({
@@ -100,7 +100,7 @@ const getGoldbox = async () => {
 	const URL = BASE_URL + "/v1/products/goldbox";
 
 	try {
-		const authorization = generateHmac(REQUEST_METHOD, URL, SECRET_KEY, ACCESS_KEY);
+		const authorization = generateHmac(REQUEST_METHOD, URL, config.COUPANG_SECRET_KEY, config.COUPANG_ACCESS_KEY);
 		axios.defaults.baseURL = DOMAIN;
 	
 		const response = await axios.request({
