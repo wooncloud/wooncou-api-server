@@ -157,6 +157,7 @@ sketch
 
 # End of https://www.toptal.com/developers/gitignore/api/react,node
 
-config
+server/config/coupang.js
+server/config/dev.js
 study
 regacy
