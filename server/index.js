@@ -43,4 +43,8 @@ app.use('/api/coupang', coupangRouter);
 app.use('/api/goldbox', goldbox);
 app.use('/api/common', common);
 
+app.get('/', (req, res) => {
+	res.send('wooncou')
+});
+
 app.listen(port, () => console.log(`Wooncou app listening on port ${port}!`))
