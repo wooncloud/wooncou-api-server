@@ -13,8 +13,7 @@ app.use(cookieParser());
 
 // [mongoose]
 const mongoose = require('mongoose');
-// mongoose.connect(config.mongoURI, {
-mongoose.connect(process.env.MONGODB_URI, {
+mongoose.connect(config.mongoURI, {
 	useNewUrlParser:true,
 	useUnifiedTopology:true,
 	useCreateIndex:true,

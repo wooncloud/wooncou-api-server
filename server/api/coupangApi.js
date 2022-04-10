@@ -1,7 +1,7 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
 const { generateHmac } = require('./hmacGenerator');
-const { ACCESS_KEY, SECRET_KEY } = require('../config/coupang');
+const config = require('../config/key');
 
 const DOMAIN = "https://api-gateway.coupang.com";
 const BASE_URL = "/v2/providers/affiliate_open_api/apis/openapi";
@@ -40,8 +40,7 @@ const getDeeplink = async (value) => {
 	const data = await crawlingCoupangInfo(orgUrl);
 
 	try {
-		// const authorization = generateHmac(REQUEST_METHOD, URL, SECRET_KEY, ACCESS_KEY);
-		const authorization = generateHmac(REQUEST_METHOD, URL, process.env.COUPANG_SECRET_KEY, process.env.ACCESS_KEY);
+		const authorization = generateHmac(REQUEST_METHOD, URL, config.COUPANG_SECRET_KEY, config.ACCESS_KEY);
 		axios.defaults.baseURL = DOMAIN;
 
 		const response = await axios.request({
