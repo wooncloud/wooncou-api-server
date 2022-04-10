@@ -1,10 +1,10 @@
 const express = require('express')
 const app = express()
-const port = 5000
 const config = require('./config/key');
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const axios = require('axios');
+const port = config.PORT;
 
 // [bodyParser Setting]
 app.use(bodyParser.urlencoded({extended: true}));
