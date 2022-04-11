@@ -8,7 +8,7 @@ const cors = require('cors');
 const port = config.PORT;
 
 // CORS
-const domains = ['https://wooncou.web.app'];
+const domains = ['https://wooncou.web.app', 'http://localhost:8080'];
 
 const corsOptions = {
 	origin: function (origin, callback) {
