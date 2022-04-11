@@ -4,22 +4,36 @@ const config = require('./config/key');
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const axios = require('axios');
+const cors = require('cors');
 const port = config.PORT;
 
+// CORS
+const domains = ['http://localhost:3000', 'https://wooncou.web.app/'];
+
+const corsOptions = {
+	origin: function (origin, callback) {
+		const isTrue = domains.indexOf(origin) !== -1;
+		callback(null, isTrue);
+	}
+	,
+	credentials: true
+}
+app.use(cors(corsOptions));
+
 // [bodyParser Setting]
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 
 // [mongoose]
 const mongoose = require('mongoose');
 mongoose.connect(config.mongoURI, {
-	useNewUrlParser:true,
-	useUnifiedTopology:true,
-	useCreateIndex:true,
-	useFindAndModify:false
+	useNewUrlParser: true,
+	useUnifiedTopology: true,
+	useCreateIndex: true,
+	useFindAndModify: false
 }).then(() => console.log("Mongo DB connection..."))
-.catch(err => console.log(err))
+	.catch(err => console.log(err))
 
 // [SCHEDULER]
 const scheduler = require('./schedule');
