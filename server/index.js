@@ -7,9 +7,13 @@ const axios = require('axios');
 const cors = require('cors');
 const port = config.PORT;
 
+// [bodyParser Setting]
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(cookieParser());
+
 // CORS
 const domains = ['https://wooncou.web.app', 'http://localhost:8080'];
-
 const corsOptions = {
 	origin: function (origin, callback) {
 		const isTrue = domains.indexOf(origin) !== -1;
@@ -19,11 +23,6 @@ const corsOptions = {
 	credentials: true
 }
 app.use(cors(corsOptions));
-
-// [bodyParser Setting]
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-app.use(cookieParser());
 
 // [mongoose]
 const mongoose = require('mongoose');
