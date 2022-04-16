@@ -13,7 +13,7 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 
 // CORS
-const domains = ['https://wooncou.web.app', 'http://localhost:8080'];
+const domains = ['http://52.79.225.14'];
 const corsOptions = {
 	origin: function (origin, callback) {
 		const isTrue = domains.indexOf(origin) !== -1;
