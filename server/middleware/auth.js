@@ -11,7 +11,6 @@ const auth = (req, res, next) => {
 		if (err) throw err;
 
 		// 유저가 있으면 인증 O / 유저가 없으면 X
-	console.log(":: login user : ", user.name, user.email);
 		if (!user) {
 			return res.json({
 				isAuth: false,
@@ -19,6 +18,7 @@ const auth = (req, res, next) => {
 			});
 		}
 
+		console.log(":: login user : ", user.name, user.email);
 		req.token = token;
 		req.user = user;
 		next();
