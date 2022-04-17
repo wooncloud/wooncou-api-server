@@ -13,7 +13,7 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 
 // CORS
-const domains = ['http://52.79.225.14'];
+const domains = config.CORS;
 const corsOptions = {
 	origin: function (origin, callback) {
 		const isTrue = domains.indexOf(origin) !== -1;
