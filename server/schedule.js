@@ -3,7 +3,7 @@ const { getGoldbox } = require('./api/coupangApi');
 const { Goldbox } = require('./models/Goldbox');
 
 function goldboxSchedule() {
-	const job = schedule.scheduleJob("10 30 7 * * *", async function() {
+	const job = schedule.scheduleJob("10 00 8 * * *", async function() {
 		console.log("골드박스 데이터를 가져옵니다.");
 
 		const data = await getGoldbox();
