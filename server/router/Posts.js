@@ -28,7 +28,7 @@ router.get("/post",  (req, res) => {
 router.get("/post/:id",  (req, res) => {
 	const filter = { temp: false, deleted: "N" };
 	filter._id = req.params.id;
-	Post.findOne(filter, (err, data) => {
+	Post.findOneAndUpdate(filter, {$inc: {views: 1}}, {w: 1}, (err, data) => {
 		if (err) {
 			return res.json({ success: false, err });
 		} else {
