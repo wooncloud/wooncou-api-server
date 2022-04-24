@@ -213,4 +213,15 @@ router.delete("/post", (req, res) => {
 	});
 });
 
+router.get("/admin/post/sitemap",  (req, res) => {
+	const filter = { temp: false, deleted: "N" };
+	Post.find(filter, (err, data) => {
+		if (err) {
+			return res.json({ success: false, err });
+		} else {
+			return res.status(200).json({ success: true, posts: data });
+		}
+	});
+});
+
 module.exports = router;
